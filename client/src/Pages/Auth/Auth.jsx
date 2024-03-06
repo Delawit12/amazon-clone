@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import LayOut from '../../component/Layout/LayOut';
 import classes from "./Auth.module.css"
-import { Link,useNavigate } from 'react-router-dom';
+import { Link,useNavigate,useLocation } from 'react-router-dom';
 import {auth} from "../../utility/fireBase"
 import {signInWithEmailAndPassword, createUserWithEmailAndPassword} from "firebase/auth"
 import { DataContext } from '../../component/DataProvider/DataProvider'
@@ -15,6 +15,7 @@ const Auth = () => {
     signUp:false});
     const [{user},dispatch] = useContext(DataContext)
     const navigate =useNavigate();
+    const navData = useLocation()
     // console.log(user)
     // console.log(email,password)
     const authHandler=async(e)=>{
@@ -31,7 +32,7 @@ const Auth = () => {
                     user: userInfo.user
                 });
                 setLoading({...loading,signIn:false})
-                navigate("/")
+                navigate(navData?.state?.redirect||"/")
             } catch (error) {
                 // console.log(error.message);
                 setError(error.message);
@@ -46,7 +47,7 @@ const Auth = () => {
                     user: userInfo.user
                 });
                 setLoading({...loading,signUp:false})
-                navigate("/")
+                navigate(navData?.state?.redirect||"/")
             } catch (error) {
                 // console.log(error.message);
                 setError(error.message);
@@ -64,6 +65,18 @@ const Auth = () => {
                 {/* form  */}
                 <div className={classes.login_container}>
                     <div>
+                        {
+                            navData?.state?.msg&&(
+                                <small style={
+                                    {
+                                        padding:"5px",
+                                        textAlign:"center",
+                                        color:"red",
+                                        fontWeight:"bold",
+                                    }
+                                }>{navData?.state?.msg}</small>
+                            )
+                        }
                     <h1>Sign In</h1>
                     <form action=''>
                         {/* E-mail */}
